@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Incarico Squadra</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      font-family: Arial, sans-serif;
+      color: white;
+      overflow: hidden;
+    }
+    body {
+      background-color: #000011;
+      position: relative;
+    }
+    #stars {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      display: block;
+    }
+    .card {
+      background: rgba(30, 34, 56, 0.9);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #00ffff66;
+      max-width: 600px;
+      margin: 15% auto;
+      text-align: center;
+      transform: scale(1.2);
+    }
+    button {
+      margin-top: 20px;
+      background: #00ffff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+
+  <div class="card" id="taskContainer">
+    <h2>Incarico Squadra</h2>
+    <p id="taskText"></p>
+    <button onclick="history.back()">⬅ Torna Indietro</button>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const starCount = 600;
+      for (let i = 0; i < starCount; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const radius = Math.random() * 1.5;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, 2 * Math.PI);
+        ctx.fillStyle = 'white';
+        ctx.globalAlpha = Math.random();
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    window.addEventListener('resize', () => {
+      resize();
+      drawStars();
+    });
+
+    resize();
+    drawStars();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const team = parseInt(urlParams.get('team'));
+
+    const tasks = [
+      "Incarico Squadra 1: Preparare la tenda spaziale e organizzare i materiali.",
+      "Incarico Squadra 2: Allestire la postazione osservatorio e preparare il telescopio.",
+      "Incarico Squadra 3: Organizzare le attività di sopravvivenza nello spazio.",
+      "Incarico Squadra 4: Preparare il gioco di simulazione missione spaziale.",
+      "Incarico Squadra 5: Gestire il rifornimento energetico e le comunicazioni."
+    ];
+
+    document.getElementById('taskText').textContent = tasks[team] || "Squadra sconosciuta.";
+
+  </script>
+</body>
+</html>
