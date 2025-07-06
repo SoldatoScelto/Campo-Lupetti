@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Codice Morse</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      font-family: Arial, sans-serif;
+      color: white;
+      overflow: hidden;
+    }
+    body {
+      background-color: #000011;
+      position: relative;
+    }
+    #stars {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      display: block;
+    }
+    .card {
+      background: rgba(30, 34, 56, 0.9);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #00ffff66;
+      max-width: 600px;
+      margin: 15% auto;
+      text-align: center;
+      transform: scale(1.2);
+    }
+    input, button {
+      margin: 10px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      background: #00ffff;
+      cursor: pointer;
+    }
+    .morse {
+      font-family: monospace;
+      font-size: 24px;
+      margin: 20px 0;
+      user-select: none;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      height: 24px;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+
+  <div class="card">
+    <h2>Traduci il Codice Morse</h2>
+    <div class="morse" id="morseDisplay"></div>
+    <input type="text" id="userInput" placeholder="Scrivi la parola decifrata" autocomplete="off" />
+    <br />
+    <button onclick="checkWord()">Invia</button>
+    <div id="result"></div>
+    <br />
+    <button onclick="history.back()">⬅ Torna Indietro</button>
+  </div>
+
+  <script>
+    // Canvas per stelle casuali
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const starCount = 600;
+      for (let i = 0; i < starCount; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const radius = Math.random() * 1.5;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, 2 * Math.PI);
+        ctx.fillStyle = 'white';
+        ctx.globalAlpha = Math.random();
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    window.addEventListener('resize', () => {
+      resize();
+      drawStars();
+    });
+
+    resize();
+    drawStars();
+
+    // Morse code and logic
+    const urlParams = new URLSearchParams(window.location.search);
+    const team = parseInt(urlParams.get('team'));
+    const day = parseInt(urlParams.get('day'));
+
+    const words = [
+      ["LUNA", "MARTE", "STELLA", "RAZZO", "GALASSIA"],
+      ["ASTRONAUTA", "METEORITE", "VENERE", "ORBITA", "COSMO"],
+      ["SATURNO", "COMETA", "TERRA", "NAVETTA", "PLUTONE"],
+      ["NEBULOSA", "GRAVITÀ", "MERCURIO", "SPAZIO", "OSSERVATORIO"],
+      ["SOLARE", "TELESCOPIO", "ASTEROIDE", "UNIVERSO", "EQUATORE"]
+    ];
+
+    const morseCode = {
+      A: ".-", B: "-...", C: "-.-.", D: "-..", E: ".", F: "..-.",
+      G: "--.", H: "....", I: "..", J: ".---", K: "-.-", L: ".-..",
+      M: "--", N: "-.", O: "---", P: ".--.", Q: "--.-", R: ".-.",
+      S: "...", T: "-", U: "..-", V: "...-", W: ".--", X: "-..-",
+      Y: "-.--", Z: "--..", "À": ".--.-", "È": "..-..", "Ù": "..--"
+    };
+
+    const word = words[team][day].toUpperCase();
+    const morse = word.split('').map(c => morseCode[c] || '').join(' ');
+    document.getElementById("morseDisplay").textContent = morse;
+
+    function checkWord() {
+      const input = document.getElementById("userInput").value.trim().toUpperCase();
+      if (input === word) {
+        window.location.href = `incarico.html?team=${team}`;
+      } else {
+        const resultEl = document.getElementById("result");
+        resultEl.textContent = "❌ Parola errata! Riprova.";
+        setTimeout(() => { resultEl.textContent = ""; }, 3000);
+      }
+    }
+  </script>
+</body>
+</html>
